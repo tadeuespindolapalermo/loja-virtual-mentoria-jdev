@@ -3,6 +3,7 @@ package br.com.tadeudeveloper.lojavirtual.model;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -25,8 +26,10 @@ public class AvaliacaoProduto implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_avaliacao_produto")
 	private Long id;
 
+	@Column(nullable = false)
 	private String descricao;
 
+	@Column(nullable = false)
 	private Integer nota;
 
 	@ManyToOne(targetEntity = Pessoa.class)
