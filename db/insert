@@ -1,0 +1,11 @@
+INSERT INTO public.produto(
+	id, alerta_qtd_estoque, altura, ativo, descricao, largura, link_video_you_tube, nome, peso, profundidade, qtd_alerta_estoque, qtd_clique, qtd_estoque, tipo_unidade, valor_venda)
+	VALUES (1, true, 10.0, true, 'Produto Teste', 50.2, 'https://www.youtube.com.br', 'Produto Qualquer', 50.0, 80.8, 1, 50, 1, 'UN', 50.00);
+	
+INSERT INTO public.avaliacao_produto(
+	id, descricao, nota, pessoa_id, produto_id)
+	VALUES (1, 'Avaliação Teste Trigger', 10, 1, 1);
+	
+INSERT INTO public.pessoa_fisica(
+	id, email, nome, telefone, cpf, data_nascimento)
+	VALUES (1, 'tadeupalermoti@gmail.com', 'Tadeu Espindola Palermo', '61986473913', '99999999999', '1985-09-16');

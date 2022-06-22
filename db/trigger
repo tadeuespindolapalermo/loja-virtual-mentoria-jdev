@@ -1,0 +1,141 @@
+-- pessoa_id
+CREATE OR REPLACE FUNCTION validaChavePessoa()
+	RETURNS TRIGGER
+	LANGUAGE PLPGSQL
+AS $$
+declare existe integer;
+
+BEGIN
+	existe = (select count(1) from pessoa_fisica where id = NEW.pessoa_id);
+	if (existe <= 0) then
+		existe = (select count(1) from pessoa_juridica where id = NEW.pessoa_id);
+	if (existe <= 0) then
+		RAISE EXCEPTION 'Não foi encontrado o ID e PK da pessoa para realizar a associação do cadastro';
+	end if;
+	end if;
+    return new;
+END;
+$$
+
+-- pessoa_forn_id
+CREATE OR REPLACE FUNCTION validaChavePessoaForn()
+	RETURNS TRIGGER
+	LANGUAGE PLPGSQL
+AS $$
+declare existe integer;
+
+BEGIN
+	existe = (select count(1) from pessoa_fisica where id = NEW.pessoa_forn_id);
+	if (existe <= 0) then
+		existe = (select count(1) from pessoa_juridica where id = NEW.pessoa_forn_id);
+	if (existe <= 0) then
+		RAISE EXCEPTION 'Não foi encontrado o ID e PK da pessoa para realizar a associação do cadastro';
+	end if;
+	end if;
+    return new;
+END;
+$$
+
+-- AvaliacaoProduto
+CREATE TRIGGER validaChaveUpdatePessoaAvaliacaoProduto
+	BEFORE UPDATE
+	ON avaliacao_produto
+	FOR EACH ROW
+	EXECUTE PROCEDURE validaChavePessoa();
+	
+CREATE TRIGGER validaChaveInsertPessoaAvaliacaoProduto
+	BEFORE INSERT
+	ON avaliacao_produto
+	FOR EACH ROW
+	EXECUTE PROCEDURE validaChavePessoa();
+	
+-- ContaPagar
+CREATE TRIGGER validaChaveUpdatePessoaContaPagar
+	BEFORE UPDATE
+	ON conta_pagar
+	FOR EACH ROW
+	EXECUTE PROCEDURE validaChavePessoa();
+	
+CREATE TRIGGER validaChaveInsertPessoaContaPagar
+	BEFORE INSERT
+	ON conta_pagar
+	FOR EACH ROW
+	EXECUTE PROCEDURE validaChavePessoa();
+
+-- ContaPagar Forn
+CREATE TRIGGER validaChaveUpdatePessoaContaPagarForn
+	BEFORE UPDATE
+	ON conta_pagar
+	FOR EACH ROW
+	EXECUTE PROCEDURE validaChavePessoaForn();
+	
+CREATE TRIGGER validaChaveInsertPessoaContaPagarForn
+	BEFORE INSERT
+	ON conta_pagar
+	FOR EACH ROW
+	EXECUTE PROCEDURE validaChavePessoaForn();
+
+-- ContaReceber
+CREATE TRIGGER validaChaveUpdatePessoaContaReceber
+	BEFORE UPDATE
+	ON conta_receber
+	FOR EACH ROW
+	EXECUTE PROCEDURE validaChavePessoa();
+	
+CREATE TRIGGER validaChaveInsertPessoaContaReceber
+	BEFORE INSERT
+	ON conta_receber
+	FOR EACH ROW
+	EXECUTE PROCEDURE validaChavePessoa();	
+	
+-- Endereco
+CREATE TRIGGER validaChaveUpdatePessoaEndereco
+	BEFORE UPDATE
+	ON endereco
+	FOR EACH ROW
+	EXECUTE PROCEDURE validaChavePessoa();
+	
+CREATE TRIGGER validaChaveInsertPessoaEndereco
+	BEFORE INSERT
+	ON endereco
+	FOR EACH ROW
+	EXECUTE PROCEDURE validaChavePessoa();
+	
+-- NotaFiscalCompra
+CREATE TRIGGER validaChaveUpdatePessoaNotaFiscalCompra
+	BEFORE UPDATE
+	ON nota_fiscal_compra
+	FOR EACH ROW
+	EXECUTE PROCEDURE validaChavePessoa();
+	
+CREATE TRIGGER validaChaveInsertPessoaNotaFiscalCompra
+	BEFORE INSERT
+	ON nota_fiscal_compra
+	FOR EACH ROW
+	EXECUTE PROCEDURE validaChavePessoa();
+	
+-- Usuario
+CREATE TRIGGER validaChaveUpdatePessoaUsuario
+	BEFORE UPDATE
+	ON usuario
+	FOR EACH ROW
+	EXECUTE PROCEDURE validaChavePessoa();
+	
+CREATE TRIGGER validaChaveInsertPessoaUsuario
+	BEFORE INSERT
+	ON usuario
+	FOR EACH ROW
+	EXECUTE PROCEDURE validaChavePessoa();
+	
+-- VendaCompraLojaVirtual
+CREATE TRIGGER validaChaveUpdatePessoaVendaCompraLojaVirtual
+	BEFORE UPDATE
+	ON vd_cp_loja_virt
+	FOR EACH ROW
+	EXECUTE PROCEDURE validaChavePessoa();
+	
+CREATE TRIGGER validaChaveInsertPessoaVendaCompraLojaVirtual
+	BEFORE INSERT
+	ON vd_cp_loja_virt
+	FOR EACH ROW
+	EXECUTE PROCEDURE validaChavePessoa();
