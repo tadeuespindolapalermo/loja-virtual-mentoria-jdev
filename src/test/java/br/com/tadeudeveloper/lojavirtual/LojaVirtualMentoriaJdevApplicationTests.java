@@ -5,6 +5,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -22,6 +23,7 @@ import br.com.tadeudeveloper.lojavirtual.model.Acesso;
 import br.com.tadeudeveloper.lojavirtual.repository.AcessoRepository;
 import junit.framework.TestCase;
 
+@Profile("test")
 @SpringBootTest(classes = LojaVirtualMentoriaJdevApplication.class)
 class LojaVirtualMentoriaJdevApplicationTests extends TestCase {
 
