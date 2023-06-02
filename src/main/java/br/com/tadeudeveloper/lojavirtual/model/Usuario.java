@@ -50,7 +50,7 @@ public class Usuario implements UserDetails {
 	@Temporal(TemporalType.DATE)
 	private Date dataAtualSenha;
 	
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.EAGER)
 	@JoinTable(
 		name = "usuarios_acesso",
 		uniqueConstraints = @UniqueConstraint(
