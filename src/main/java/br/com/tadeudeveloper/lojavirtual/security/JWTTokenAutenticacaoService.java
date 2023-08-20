@@ -16,8 +16,11 @@ import org.springframework.stereotype.Service;
 import br.com.tadeudeveloper.lojavirtual.ApplicationContextLoad;
 import br.com.tadeudeveloper.lojavirtual.model.Usuario;
 import br.com.tadeudeveloper.lojavirtual.repository.UsuarioRepository;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 
 @Service
 public class JWTTokenAutenticacaoService {
@@ -49,32 +52,40 @@ public class JWTTokenAutenticacaoService {
 		response.getWriter().write("{\"Authorization\": \"" + token + "\"}");
 	}
 	
-	public Authentication getAuthentication(HttpServletRequest request, HttpServletResponse response) {
+	public Authentication getAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String token = request.getHeader(HEADER_STRING);
 		
-		if (nonNull(token)) {
-			String tokenLimpo = token.replace(TOKEN_PREFIX, "");
-			String user = Jwts.parser()
-				.setSigningKey(SECRET)
-				.parseClaimsJws(tokenLimpo)
-				.getBody()
-				.getSubject();
-			
-			if (nonNull(user)){
-				Usuario usuario = ApplicationContextLoad.getApplicationContext()
-					.getBean(UsuarioRepository.class)
-					.findUserByLogin(user);
+		try {
+		
+			if (nonNull(token)) {
+				String tokenLimpo = token.replace(TOKEN_PREFIX, "");
+				String user = Jwts.parser()
+					.setSigningKey(SECRET)
+					.parseClaimsJws(tokenLimpo)
+					.getBody()
+					.getSubject();
 				
-				if (nonNull(usuario)) {
-					return new UsernamePasswordAuthenticationToken(
-						usuario.getLogin(), usuario.getSenha(), usuario.getAuthorities()
-					);
+				if (nonNull(user)){
+					Usuario usuario = ApplicationContextLoad.getApplicationContext()
+						.getBean(UsuarioRepository.class)
+						.findUserByLogin(user);
+					
+					if (nonNull(usuario)) {
+						return new UsernamePasswordAuthenticationToken(
+							usuario.getLogin(), usuario.getSenha(), usuario.getAuthorities()
+						);
+					}
 				}
 			}
+		} catch(SignatureException e) {
+			response.getWriter().write("O token está inválido!");
+		} catch(ExpiredJwtException e) {
+			response.getWriter().write("O token está expirado! Efetue o login novamente!");
+		} catch(MalformedJwtException e) {
+			response.getWriter().write("O token está mal formado! Utilize um outro token!");
+		} finally {
+			liberarCorsPolicy(response);
 		}
-		
-		liberarCorsPolicy(response);
-		
 		return null;
 	}
 	
