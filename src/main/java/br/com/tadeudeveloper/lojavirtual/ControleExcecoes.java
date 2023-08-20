@@ -20,6 +20,17 @@ import br.com.tadeudeveloper.lojavirtual.model.dto.ObjetoErroDTO;
 @RestControllerAdvice
 public class ControleExcecoes extends ResponseEntityExceptionHandler {
 	
+	@ExceptionHandler({ ExceptionMentoriaJava.class	})
+	public ResponseEntity<Object> handleExceptionCustom(ExceptionMentoriaJava ex) {
+		ObjetoErroDTO objetoErroDTO = new ObjetoErroDTO();
+		
+		objetoErroDTO.setError(ex.getMessage());
+		objetoErroDTO.setCode(HttpStatus.OK.toString());
+		
+		return new ResponseEntity<>(objetoErroDTO, HttpStatus.OK);
+	}
+	
+	
 	// Captura exceções do projeto
 	@ExceptionHandler({
 		Exception.class, RuntimeException.class, Throwable.class
@@ -42,7 +53,7 @@ public class ControleExcecoes extends ResponseEntityExceptionHandler {
 		}
 		
 		objetoErroDTO.setError(msg);
-		objetoErroDTO.setCode(status.value() + "==> " + status.getReasonPhrase());
+		objetoErroDTO.setCode(status.value() + " ==> " + status.getReasonPhrase());
 		
 		ex.printStackTrace();
 		

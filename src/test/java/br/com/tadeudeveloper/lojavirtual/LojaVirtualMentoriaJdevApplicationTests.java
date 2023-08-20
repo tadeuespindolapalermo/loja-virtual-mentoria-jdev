@@ -171,7 +171,7 @@ class LojaVirtualMentoriaJdevApplicationTests extends TestCase {
 
 
 	@Test
-	void testCadastraAcesso() {
+	void testCadastraAcesso() throws ExceptionMentoriaJava {
 
 		Acesso acesso = new Acesso();
 		acesso.setDescricao("ROLE_ADMIN");

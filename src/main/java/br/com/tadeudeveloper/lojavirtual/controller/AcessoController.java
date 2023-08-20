@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 //import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.tadeudeveloper.lojavirtual.ExceptionMentoriaJava;
 import br.com.tadeudeveloper.lojavirtual.model.Acesso;
 import br.com.tadeudeveloper.lojavirtual.repository.AcessoRepository;
 import br.com.tadeudeveloper.lojavirtual.service.AcessoService;
@@ -28,7 +29,14 @@ public class AcessoController {
 	private AcessoRepository acessoRepository;
 
 	@PostMapping(value = "**/salvarAcesso")
-	public ResponseEntity<Acesso> salvarAcesso(@RequestBody Acesso acesso) {
+	public ResponseEntity<Acesso> salvarAcesso(@RequestBody Acesso acesso) throws ExceptionMentoriaJava {
+		if (acesso.getId() == null) {
+			List<Acesso> acessos = acessoRepository.buscarAcessoDesc(acesso.getDescricao().toUpperCase());
+			if (!acessos.isEmpty()) {
+				throw new ExceptionMentoriaJava("Já existe acesso com a descrição: " + acesso.getDescricao());
+			}
+		}		
+		
 		Acesso acessoSalvo = acessoService.save(acesso);
 		return new ResponseEntity<>(acessoSalvo, HttpStatus.OK);
 	}
@@ -46,14 +54,14 @@ public class AcessoController {
 	}
 
 	@GetMapping(value = "**/obterAcessoPorId/{id}")
-	public ResponseEntity<Acesso> pesquisarPorId(@PathVariable("id") Long id) {
-		Acesso acesso = acessoRepository.findById(id).orElse(new Acesso());
+	public ResponseEntity<Acesso> pesquisarPorId(@PathVariable("id") Long id) throws ExceptionMentoriaJava {
+		Acesso acesso = acessoRepository.findById(id).orElseThrow(() -> new ExceptionMentoriaJava("Acesso com o id " + id + " não encontrado!"));
 		return new ResponseEntity<>(acesso, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "**/obterAcessoPorDescricao/{desc}")
 	public ResponseEntity<List<Acesso>> pesquisarPorDescricao(@PathVariable("desc") String desc) {
-		List<Acesso> acessos = acessoRepository.buscarAcessoDesc(desc);
+		List<Acesso> acessos = acessoRepository.buscarAcessoDesc(desc.toUpperCase());
 		return new ResponseEntity<>(acessos, HttpStatus.OK);
 	}
 
