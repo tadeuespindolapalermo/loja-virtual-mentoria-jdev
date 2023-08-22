@@ -1,5 +1,6 @@
 package br.com.tadeudeveloper.lojavirtual;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,7 @@ class LojaVirtualMentoriaJdevApplicationTests extends TestCase {
 		MockMvc mockMvc = builder.build();
 		
 		Acesso acesso = new Acesso();
-		acesso.setDescricao("ROLE_COMPRADOR");
+		acesso.setDescricao("ROLE_COMPRADOR" + Calendar.getInstance().getTimeInMillis());
 		
 		ObjectMapper mapper = new ObjectMapper();
 		
@@ -174,7 +175,10 @@ class LojaVirtualMentoriaJdevApplicationTests extends TestCase {
 	void testCadastraAcesso() throws ExceptionMentoriaJava {
 
 		Acesso acesso = new Acesso();
-		acesso.setDescricao("ROLE_ADMIN");
+		
+		String descAcesso = "ROLE_ADMIN" + Calendar.getInstance().getTimeInMillis();
+		
+		acesso.setDescricao(descAcesso);
 
 		assertEquals(true, acesso.getId() == null);
 
@@ -182,7 +186,7 @@ class LojaVirtualMentoriaJdevApplicationTests extends TestCase {
 
 		assertEquals(true, acesso.getId() > 0);
 
-		assertEquals("ROLE_ADMIN", acesso.getDescricao());
+		assertEquals(descAcesso, acesso.getDescricao());
 
 		Acesso acesso2 = acessoRepository.findById(acesso.getId()).get();
 

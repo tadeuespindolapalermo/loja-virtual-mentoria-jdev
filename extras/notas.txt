@@ -1,0 +1,58 @@
+5.1 - Dividindo o banco de dados por empresas
+
+alter table avaliacao_produto add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
+
+alter table categoria_produto add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
+
+alter table conta_pagar add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
+
+alter table conta_receber add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
+
+alter table cup_desc add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
+
+alter table endereco add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
+
+alter table forma_pagamento add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
+
+alter table imagem_produto add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
+
+alter table item_venda_loja add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
+
+alter table marca_produto add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
+
+alter table nota_fiscal_compra add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
+
+alter table nota_fiscal_venda add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
+
+alter table nota_item_produto add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
+
+alter table pessoa_fisica add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
+
+alter table pessoa_juridica add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
+
+alter table produto add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
+
+alter table status_rastreio add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
+
+alter table usuario add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
+
+alter table vd_cp_loja_virt add constraint empresa_fk FOREIGN key (empresa_id) 
+references pessoa_juridica (id)
