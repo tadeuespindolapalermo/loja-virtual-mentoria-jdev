@@ -14,10 +14,11 @@ import java.util.Properties;
 public class ServiceSendEmail {
 
     private String userName = "tadeupalermoti@gmail.com";
-    private String password = "ctthaietitegsejc";
+    private String password;
 
     @Async
     public void enviarEmailHtml(String assunto, String textoMensagem, String emailDestino) throws MessagingException, UnsupportedEncodingException {
+        password = System.getenv("SENHA_APP_GOOGLE_EMAIL");
         Properties properties = new Properties();
 
         // Alex porque o envio dele parou de funcionar

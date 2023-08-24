@@ -1,7 +1,9 @@
 package br.com.tadeudeveloper.lojavirtual.service;
 
+import br.com.tadeudeveloper.lojavirtual.model.PessoaFisica;
 import br.com.tadeudeveloper.lojavirtual.model.PessoaJuridica;
 import br.com.tadeudeveloper.lojavirtual.model.Usuario;
+import br.com.tadeudeveloper.lojavirtual.repository.PessoaFisicaRepository;
 import br.com.tadeudeveloper.lojavirtual.repository.PessoaJuridicaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,6 +22,9 @@ public class PessoaUserService {
 
 	@Autowired
 	private PessoaJuridicaRepository pessoaJuridicaRepository;
+
+	@Autowired
+	private PessoaFisicaRepository pessoaFisicaRepository;
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -57,12 +62,12 @@ public class PessoaUserService {
 			usuarioPj.setSenha(senhaCriptografada);
 			usuarioPj = usuarioRepository.save(usuarioPj);
 
-			usuarioRepository.insereAcessoUserPj(usuarioPj.getId(), "ROLE_USER");
+			usuarioRepository.insereAcessoUser(usuarioPj.getId());
 			usuarioRepository.insereAcessoUserPj(usuarioPj.getId(), "ROLE_ADMIN");
 
 			// Envio e-mail login e senha
 			StringBuilder mensagemHtml = new StringBuilder();
-			mensagemHtml.append("<b>Segue abaixo seus dados de acesso para a loja virtual:</b><br/><br/>");
+			mensagemHtml.append("<b>Segue abaixo seus dados de acesso Pessoa Jurídica para a loja virtual:</b><br/><br/>");
 			mensagemHtml.append("<b>Login:</b> " + pessoaJuridica.getEmail() + "<br/>");
 			mensagemHtml.append("<b>Senha:</b> ").append(senha).append("<br/><br/>");
 			mensagemHtml.append("<b>Muito obrigado!</b>");
@@ -78,6 +83,58 @@ public class PessoaUserService {
 		}
 
 		return pessoaJuridica;
+	}
+
+	public PessoaFisica salvarPessoaFisica(PessoaFisica pessoaFisica) {
+
+		//pessoaFisica = pessoaFisicaRepository.save(pessoaFisica);
+
+		for (int i = 0; i < pessoaFisica.getEnderecos().size(); i++) {
+			pessoaFisica.getEnderecos().get(i).setPessoa(pessoaFisica);
+			//pessoaFisica.getEnderecos().get(i).setEmpresa(pessoaFisica);
+		}
+
+		pessoaFisica = pessoaFisicaRepository.save(pessoaFisica);
+
+		Usuario usuarioPf = usuarioRepository.findUserByPessoa(pessoaFisica.getId(), pessoaFisica.getEmail());
+
+		if (usuarioPf == null) {
+			String constraint = usuarioRepository.consultaConstraintAcesso();
+			if (constraint != null) {
+				jdbcTemplate.execute("begin; alter table usuarios_acesso drop constraint " + constraint + "; commit;");
+			}
+			usuarioPf = new Usuario();
+			usuarioPf.setDataAtualSenha(Calendar.getInstance().getTime());
+			usuarioPf.setEmpresa(pessoaFisica.getEmpresa());
+			usuarioPf.setPessoa(pessoaFisica);
+			usuarioPf.setLogin(pessoaFisica.getEmail());
+
+			String senha = "" + Calendar.getInstance().getTimeInMillis();
+			String senhaCriptografada = new BCryptPasswordEncoder().encode(senha);
+
+			usuarioPf.setSenha(senhaCriptografada);
+			usuarioPf = usuarioRepository.save(usuarioPf);
+
+			usuarioRepository.insereAcessoUser(usuarioPf.getId());
+
+			// Envio e-mail login e senha
+			StringBuilder mensagemHtml = new StringBuilder();
+			mensagemHtml.append("<b>Segue abaixo seus dados de acesso Pessoa Física para a loja virtual:</b><br/><br/>");
+			mensagemHtml.append("<b>Login:</b> " + pessoaFisica.getEmail() + "<br/>");
+			mensagemHtml.append("<b>Senha:</b> ").append(senha).append("<br/><br/>");
+			mensagemHtml.append("<b>Muito obrigado!</b>");
+			try {
+				serviceSendEmail.enviarEmailHtml(
+					"Acesso gerado para Loja Virtual",
+					mensagemHtml.toString(),
+					pessoaFisica.getEmail()
+				);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return pessoaFisica;
 	}
 
 }
