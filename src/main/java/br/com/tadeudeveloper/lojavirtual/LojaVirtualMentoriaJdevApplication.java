@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -17,6 +18,7 @@ import java.util.concurrent.Executor;
 
 @SpringBootApplication
 @EnableAsync
+@EnableScheduling
 //@EntityScan(basePackages = "br.com.tadeudeveloper.lojavirtual.model")
 //@ComponentScan(basePackages = {"br.*"})
 //@EnableJpaRepositories(basePackages = {"br.com.tadeudeveloper.lojavirtual.repository"})
