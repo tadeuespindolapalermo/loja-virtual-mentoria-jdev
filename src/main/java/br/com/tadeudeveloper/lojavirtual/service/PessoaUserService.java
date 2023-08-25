@@ -3,6 +3,7 @@ package br.com.tadeudeveloper.lojavirtual.service;
 import br.com.tadeudeveloper.lojavirtual.model.PessoaFisica;
 import br.com.tadeudeveloper.lojavirtual.model.PessoaJuridica;
 import br.com.tadeudeveloper.lojavirtual.model.Usuario;
+import br.com.tadeudeveloper.lojavirtual.model.dto.CepDTO;
 import br.com.tadeudeveloper.lojavirtual.repository.PessoaFisicaRepository;
 import br.com.tadeudeveloper.lojavirtual.repository.PessoaJuridicaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.tadeudeveloper.lojavirtual.repository.UsuarioRepository;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Calendar;
 
@@ -135,6 +137,10 @@ public class PessoaUserService {
 		}
 
 		return pessoaFisica;
+	}
+
+	public CepDTO consultarCep(String cep) {
+		return new RestTemplate().getForEntity("https://viacep.com.br/ws/" + cep + "/json/", CepDTO.class).getBody();
 	}
 
 }
