@@ -1,5 +1,7 @@
 package br.com.tadeudeveloper.lojavirtual.model;
 
+import org.hibernate.validator.constraints.br.CPF;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -17,6 +19,7 @@ public class PessoaFisica extends Pessoa {
 
 	private static final long serialVersionUID = 1486520304892634266L;
 
+	@CPF(message = "CPF inválido!")
 	@Column(nullable = false)
 	private String cpf;
 

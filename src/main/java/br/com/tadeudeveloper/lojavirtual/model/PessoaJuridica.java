@@ -1,5 +1,7 @@
 package br.com.tadeudeveloper.lojavirtual.model;
 
+import org.hibernate.validator.constraints.br.CNPJ;
+
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -14,6 +16,7 @@ public class PessoaJuridica extends Pessoa {
 
 	private static final long serialVersionUID = -5820216660843794137L;
 
+	@CNPJ(message = "CNPJ inválido!")
 	@Column(nullable = false)
 	private String cnpj;
 	
