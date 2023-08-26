@@ -1,14 +1,17 @@
 package br.com.tadeudeveloper.lojavirtual.controller;
 
 import br.com.tadeudeveloper.lojavirtual.ExceptionMentoriaJava;
+import br.com.tadeudeveloper.lojavirtual.enums.TipoPessoa;
 import br.com.tadeudeveloper.lojavirtual.model.Endereco;
 import br.com.tadeudeveloper.lojavirtual.model.PessoaFisica;
 import br.com.tadeudeveloper.lojavirtual.model.PessoaJuridica;
 import br.com.tadeudeveloper.lojavirtual.model.dto.CepDTO;
+import br.com.tadeudeveloper.lojavirtual.model.dto.ConsultaCnpjDTO;
 import br.com.tadeudeveloper.lojavirtual.repository.EnderecoRepository;
 import br.com.tadeudeveloper.lojavirtual.repository.PessoaFisicaRepository;
 import br.com.tadeudeveloper.lojavirtual.repository.PessoaJuridicaRepository;
 import br.com.tadeudeveloper.lojavirtual.service.PessoaUserService;
+import br.com.tadeudeveloper.lojavirtual.service.ServiceContagemAcessoApi;
 import br.com.tadeudeveloper.lojavirtual.util.ValidaCNPJ;
 import br.com.tadeudeveloper.lojavirtual.util.ValidaCPF;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +37,13 @@ public class PessoaController {
     @Autowired
     private EnderecoRepository enderecoRepository;
 
+    @Autowired
+    private ServiceContagemAcessoApi serviceContagemAcessoApi;
+
     @GetMapping("**/consultaPfNome/{nome}")
     public ResponseEntity<List<PessoaFisica>> consultaPfNome(@PathVariable("nome") String nome) {
         List<PessoaFisica> pessoaFisicaList = pessoaFisicaRepository.pesquisaPorNomePF(nome.trim().toUpperCase());
+        serviceContagemAcessoApi.atualizaAcessoEndpointPF();
         return new ResponseEntity<>(pessoaFisicaList, HttpStatus.OK);
     }
 
@@ -63,11 +70,20 @@ public class PessoaController {
         return new ResponseEntity<>(pessoaUserService.consultarCep(cep), HttpStatus.OK);
     }
 
+    @GetMapping("**/consultaCnpjReceitaWS/{cnpj}")
+    public ResponseEntity<ConsultaCnpjDTO> consultaCnpjReceitaWS(@PathVariable("cnpj") String cnpj) {
+        return new ResponseEntity<>(pessoaUserService.consultarCnpjReceitaWS(cnpj), HttpStatus.OK);
+    }
+
     @PostMapping(value = "**/salvarPj")
     public ResponseEntity<PessoaJuridica> salvarPj(@RequestBody @Valid PessoaJuridica pessoaJuridica) throws ExceptionMentoriaJava {
 
         if (pessoaJuridica == null) {
             throw new ExceptionMentoriaJava("Pessoa jurídica não pode ser NULL!");
+        }
+
+        if (pessoaJuridica.getTipoPessoa() == null) {
+            throw new ExceptionMentoriaJava("Informe o tipo Jurídico ou Fornecedor da Loja.");
         }
 
         if (pessoaJuridica.getId() == null
@@ -106,6 +122,10 @@ public class PessoaController {
 
         if (pessoaFisica == null) {
             throw new ExceptionMentoriaJava("Pessoa física não pode ser NULL!");
+        }
+
+        if (pessoaFisica.getTipoPessoa() == null) {
+            pessoaFisica.setTipoPessoa(TipoPessoa.FISICA.name());
         }
 
         if (pessoaFisica.getId() == null

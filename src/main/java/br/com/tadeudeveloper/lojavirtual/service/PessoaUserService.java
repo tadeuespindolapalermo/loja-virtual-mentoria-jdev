@@ -4,6 +4,7 @@ import br.com.tadeudeveloper.lojavirtual.model.PessoaFisica;
 import br.com.tadeudeveloper.lojavirtual.model.PessoaJuridica;
 import br.com.tadeudeveloper.lojavirtual.model.Usuario;
 import br.com.tadeudeveloper.lojavirtual.model.dto.CepDTO;
+import br.com.tadeudeveloper.lojavirtual.model.dto.ConsultaCnpjDTO;
 import br.com.tadeudeveloper.lojavirtual.repository.PessoaFisicaRepository;
 import br.com.tadeudeveloper.lojavirtual.repository.PessoaJuridicaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,6 +142,10 @@ public class PessoaUserService {
 
 	public CepDTO consultarCep(String cep) {
 		return new RestTemplate().getForEntity("https://viacep.com.br/ws/" + cep + "/json/", CepDTO.class).getBody();
+	}
+
+	public ConsultaCnpjDTO consultarCnpjReceitaWS(String cnpj) {
+		return new RestTemplate().getForEntity("https://receitaws.com.br/v1/cnpj/" + cnpj, ConsultaCnpjDTO.class).getBody();
 	}
 
 }
