@@ -61,13 +61,13 @@ public class PessoaController {
 
         if (pessoaJuridica.getId() == null || pessoaJuridica.getId() <= 0) {
             for (int p = 0; p < pessoaJuridica.getEnderecos().size(); p++) {
-                montarEndereco(pessoaJuridica, p);
+                montarCep(pessoaJuridica, p);
             }
         } else {
             for (int p = 0; p < pessoaJuridica.getEnderecos().size(); p++) {
                 Endereco enderecoTemp = enderecoRepository.findById(pessoaJuridica.getEnderecos().get(p).getId()).get();
                 if (!enderecoTemp.getCep().equals(pessoaJuridica.getEnderecos().get(p).getCep())) {
-                    montarEndereco(pessoaJuridica, p);
+                    montarCep(pessoaJuridica, p);
                 }
             }
         }
@@ -96,7 +96,7 @@ public class PessoaController {
         return new ResponseEntity<>(pessoaFisica, HttpStatus.OK);
     }
     
-    private void montarEndereco(PessoaJuridica pessoaJuridica, int index) {
+    private void montarCep(PessoaJuridica pessoaJuridica, int index) {
         CepDTO cepDTO = pessoaUserService.consultarCep(pessoaJuridica.getEnderecos().get(index).getCep());
         pessoaJuridica.getEnderecos().get(index).setBairro(cepDTO.getBairro());
         pessoaJuridica.getEnderecos().get(index).setCidade(cepDTO.getLocalidade());
