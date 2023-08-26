@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 public class PessoaController {
@@ -33,8 +34,32 @@ public class PessoaController {
     @Autowired
     private EnderecoRepository enderecoRepository;
 
+    @GetMapping("**/consultaPfNome/{nome}")
+    public ResponseEntity<List<PessoaFisica>> consultaPfNome(@PathVariable("nome") String nome) {
+        List<PessoaFisica> pessoaFisicaList = pessoaFisicaRepository.pesquisaPorNomePF(nome.trim().toUpperCase());
+        return new ResponseEntity<>(pessoaFisicaList, HttpStatus.OK);
+    }
+
+    @GetMapping("**/consultaPfCpf/{cpf}")
+    public ResponseEntity<List<PessoaFisica>> consultaPfCpf(@PathVariable("cpf") String cpf) {
+        List<PessoaFisica> pessoaFisicaList = pessoaFisicaRepository.pesquisaPorCpfPF(cpf);
+        return new ResponseEntity<>(pessoaFisicaList, HttpStatus.OK);
+    }
+
+    @GetMapping("**/consultaNomePJ/{nome}")
+    public ResponseEntity<List<PessoaJuridica>> consultaNomePJ(@PathVariable("nome") String nome) {
+        List<PessoaJuridica> pessoaJuridicaList = pessoaJuridicaRepository.pesquisaPorNomePJ(nome.trim().toUpperCase());
+        return new ResponseEntity<>(pessoaJuridicaList, HttpStatus.OK);
+    }
+
+    @GetMapping("**/consultaCnpjPJ/{cnpj}")
+    public ResponseEntity<List<PessoaJuridica>> consultaCnpjPJ(@PathVariable("cnpj") String cnpj) {
+        List<PessoaJuridica> pessoaJuridicaList = pessoaJuridicaRepository.existeCnpjCadastradoList(cnpj);
+        return new ResponseEntity<>(pessoaJuridicaList, HttpStatus.OK);
+    }
+
     @GetMapping("**/consultaCep/{cep}")
-    public ResponseEntity<CepDTO> consultaCep(@PathVariable String cep) {
+    public ResponseEntity<CepDTO> consultaCep(@PathVariable("cep") String cep) {
         return new ResponseEntity<>(pessoaUserService.consultarCep(cep), HttpStatus.OK);
     }
 

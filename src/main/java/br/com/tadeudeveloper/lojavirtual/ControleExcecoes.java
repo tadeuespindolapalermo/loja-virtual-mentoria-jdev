@@ -1,9 +1,13 @@
 package br.com.tadeudeveloper.lojavirtual;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.List;
 
+import br.com.tadeudeveloper.lojavirtual.service.ServiceSendEmail;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,8 +22,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import br.com.tadeudeveloper.lojavirtual.model.dto.ObjetoErroDTO;
 
+import javax.mail.MessagingException;
+
 @RestControllerAdvice
 public class ControleExcecoes extends ResponseEntityExceptionHandler {
+
+	@Autowired
+	private ServiceSendEmail serviceSendEmail;
 	
 	@ExceptionHandler({ ExceptionMentoriaJava.class	})
 	public ResponseEntity<Object> handleExceptionCustom(ExceptionMentoriaJava ex) {
@@ -59,7 +68,8 @@ public class ControleExcecoes extends ResponseEntityExceptionHandler {
 		objetoErroDTO.setCode(status.value() + " ==> " + status.getReasonPhrase());
 		
 		ex.printStackTrace();
-		
+		enviarEmailErro(ex);
+
 		return new ResponseEntity<>(objetoErroDTO, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
@@ -88,8 +98,21 @@ public class ControleExcecoes extends ResponseEntityExceptionHandler {
 		objetoErroDTO.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
 		
 		ex.printStackTrace();
+		enviarEmailErro(ex);
 		
 		return new ResponseEntity<>(objetoErroDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	private void enviarEmailErro(Throwable throwable) {
+		try {
+			serviceSendEmail.enviarEmailHtml(
+				"Erro na loja virtual!",
+				ExceptionUtils.getStackTrace(throwable),
+				"tadeupalermoti@gmail.com"
+			);
+		} catch (UnsupportedEncodingException | MessagingException exception) {
+			exception.printStackTrace();
+		}
 	}
 
 }
