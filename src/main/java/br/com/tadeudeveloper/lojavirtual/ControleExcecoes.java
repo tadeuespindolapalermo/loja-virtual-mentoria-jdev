@@ -108,7 +108,7 @@ public class ControleExcecoes extends ResponseEntityExceptionHandler {
 			serviceSendEmail.enviarEmailHtml(
 				"Erro na loja virtual!",
 				ExceptionUtils.getStackTrace(throwable),
-				"tadeupalermoti@gmail.com"
+				"tadeu@jdevtreinamento.com.br"
 			);
 		} catch (UnsupportedEncodingException | MessagingException exception) {
 			exception.printStackTrace();
