@@ -20,6 +20,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import br.com.tadeudeveloper.lojavirtual.enums.StatusContaPagar;
 
@@ -34,33 +36,37 @@ public class ContaPagar implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_conta_pagar")
 	private Long id;
 
-	@ManyToOne(targetEntity = Pessoa.class)
+	@ManyToOne(targetEntity = PessoaFisica.class)
 	@JoinColumn(name = "pessoa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "pessoa_fk"))
-	private Pessoa pessoa;
+	private PessoaFisica pessoa;
 	
-	@ManyToOne(targetEntity = Pessoa.class)
+	@ManyToOne(targetEntity = PessoaJuridica.class)
 	@JoinColumn(name = "pessoa_forn_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "pessoa_forn_fk"))
-	private Pessoa pessoaFornecedor;
+	private PessoaJuridica pessoaFornecedor;
 	
-	@ManyToOne(targetEntity = Pessoa.class)
+	@ManyToOne(targetEntity = PessoaJuridica.class)
 	@JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_id_fk"))
-	private Pessoa empresa;
+	private PessoaJuridica empresa;
 
+	@NotEmpty(message = "Informe o campo descrição da conta a pagar!")
 	@Column(nullable = false)
 	private String descricao;
-	
+
+	@NotNull(message = "Informe o campo valor total da conta a pagar!")
 	@Column(nullable = false)
 	private BigDecimal valorTotal;
 	
 	private BigDecimal valorDesconto;
 
+	@NotNull(message = "Informe o campo data de vencimento da conta a pagar!")
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date dtVencimento;
 
 	@Temporal(TemporalType.DATE)
 	private Date dtPagamento;
-	
+
+	@NotNull(message = "Informe o campo status da conta a pagar!")
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private StatusContaPagar status;
@@ -73,11 +79,11 @@ public class ContaPagar implements Serializable {
 		this.id = id;
 	}
 
-	public Pessoa getPessoa() {
+	public PessoaFisica getPessoa() {
 		return pessoa;
 	}
 
-	public void setPessoa(Pessoa pessoa) {
+	public void setPessoa(PessoaFisica pessoa) {
 		this.pessoa = pessoa;
 	}
 
@@ -129,19 +135,19 @@ public class ContaPagar implements Serializable {
 		this.valorDesconto = valorDesconto;
 	}
 	
-	public Pessoa getPessoaFornecedor() {
+	public PessoaJuridica getPessoaFornecedor() {
 		return pessoaFornecedor;
 	}
 
-	public void setPessoaFornecedor(Pessoa pessoaFornecedor) {
+	public void setPessoaFornecedor(PessoaJuridica pessoaFornecedor) {
 		this.pessoaFornecedor = pessoaFornecedor;
 	}		
 
-	public Pessoa getEmpresa() {
+	public PessoaJuridica getEmpresa() {
 		return empresa;
 	}
 
-	public void setEmpresa(Pessoa empresa) {
+	public void setEmpresa(PessoaJuridica empresa) {
 		this.empresa = empresa;
 	}
 
