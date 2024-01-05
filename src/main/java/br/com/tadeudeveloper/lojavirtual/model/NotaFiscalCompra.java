@@ -18,6 +18,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "nota_fiscal_compra")
@@ -30,34 +32,39 @@ public class NotaFiscalCompra implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_nota_fiscal_compra")
 	private Long id;
 
+	@NotEmpty(message = "Informe o número da nota")
 	@Column(nullable = false)
 	private String numeroNota;
 
+	@NotEmpty(message = "Informe a série da nota")
 	@Column(nullable = false)
 	private String serieNota;
 
 	@Column(name = "descricao_obs")
 	private String descricaoObservacao;
 
+	@NotNull(message = "Informe o valor total da nota")
 	@Column(nullable = false)
 	private BigDecimal valorTotal;
 
 	private BigDecimal valorDesconto;
 
+	@NotNull(message = "Informe o valor do ICMS")
 	@Column(nullable = false)
 	private BigDecimal valorIcms;
 
+	@NotNull(message = "Informe a data da compra")
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date dataCompra;
 
-	@ManyToOne(targetEntity = Pessoa.class)
+	@ManyToOne(targetEntity = PessoaJuridica.class)
 	@JoinColumn(name = "pessoa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "pessoa_fk"))
-	private Pessoa pessoa;
+	private PessoaJuridica pessoa;
 	
-	@ManyToOne(targetEntity = Pessoa.class)
+	@ManyToOne(targetEntity = PessoaJuridica.class)
 	@JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_id_fk"))
-	private Pessoa empresa;
+	private PessoaJuridica empresa;
 
 	@ManyToOne
 	@JoinColumn(name = "conta_pagar_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "conta_pagar_fk"))
@@ -127,19 +134,19 @@ public class NotaFiscalCompra implements Serializable {
 		this.dataCompra = dataCompra;
 	}
 
-	public Pessoa getPessoa() {
+	public PessoaJuridica getPessoa() {
 		return pessoa;
 	}
 
-	public void setPessoa(Pessoa pessoa) {
+	public void setPessoa(PessoaJuridica pessoa) {
 		this.pessoa = pessoa;
 	}	
 
-	public Pessoa getEmpresa() {
+	public PessoaJuridica getEmpresa() {
 		return empresa;
 	}
 
-	public void setEmpresa(Pessoa empresa) {
+	public void setEmpresa(PessoaJuridica empresa) {
 		this.empresa = empresa;
 	}
 
