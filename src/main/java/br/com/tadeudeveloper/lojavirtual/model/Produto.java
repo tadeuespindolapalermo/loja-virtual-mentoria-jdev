@@ -15,7 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -96,11 +95,6 @@ public class Produto implements Serializable {
 	@ManyToOne(targetEntity = MarcaProduto.class)
 	@JoinColumn(name = "marca_produto_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "marca_produto_id_fk"))
 	private MarcaProduto marcaProduto;
-
-	@NotNull(message = "A nota item do produto deve ser informada.")
-	@ManyToOne(targetEntity = NotaItemProduto.class)
-	@JoinColumn(name = "nota_item_produto_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "nota_item_produto_id_fk"))
-	private NotaItemProduto notaItemProduto;
 
 	public Long getId() {
 		return id;
@@ -244,14 +238,6 @@ public class Produto implements Serializable {
 
 	public void setMarcaProduto(MarcaProduto marcaProduto) {
 		this.marcaProduto = marcaProduto;
-	}
-
-	public NotaItemProduto getNotaItemProduto() {
-		return notaItemProduto;
-	}
-
-	public void setNotaItemProduto(NotaItemProduto notaItemProduto) {
-		this.notaItemProduto = notaItemProduto;
 	}
 
 	@Override
