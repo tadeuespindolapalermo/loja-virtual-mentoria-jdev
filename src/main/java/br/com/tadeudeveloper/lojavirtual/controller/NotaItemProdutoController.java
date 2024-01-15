@@ -50,6 +50,7 @@ public class NotaItemProdutoController {
 	@DeleteMapping(value = "**/deleteNotaItemProdutoPorId/{id}")
 	public ResponseEntity<String> deleteNotaItemProdutoPorId(@PathVariable("id") Long id) {
 		notaItemProdutoRepository.deleteByIdNotaItem(id);
+		// notaItemProdutoRepository.deleteById(id); // Alex não funcionou
 		return new ResponseEntity<>("Nota Item Produto removido com sucesso!", HttpStatus.OK);
 	}
 }
