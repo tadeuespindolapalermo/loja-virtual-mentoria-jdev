@@ -2,12 +2,12 @@ package br.com.tadeudeveloper.lojavirtual.controller;
 
 import javax.validation.Valid;
 
+import br.com.tadeudeveloper.lojavirtual.model.ItemVendaLoja;
+import br.com.tadeudeveloper.lojavirtual.model.dto.ItemVendaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import br.com.tadeudeveloper.lojavirtual.ExceptionMentoriaJava;
 import br.com.tadeudeveloper.lojavirtual.model.Endereco;
@@ -51,7 +51,12 @@ public class VendaCompraLojaVirtualController {
 		vendaCompraLojaVirtual.setEnderecoEntrega(enderecoEntrega);
 		
 		vendaCompraLojaVirtual.getNotaFiscalVenda().setEmpresa(vendaCompraLojaVirtual.getEmpresa());
-		
+
+		for (int i = 0; i < vendaCompraLojaVirtual.getItemVendaLojas().size(); i++) {
+			vendaCompraLojaVirtual.getItemVendaLojas().get(i).setEmpresa(vendaCompraLojaVirtual.getEmpresa());
+			vendaCompraLojaVirtual.getItemVendaLojas().get(i).setVendaCompraLojaVirtual(vendaCompraLojaVirtual);
+		}
+
 		// Salva primeiro a venda e todos os dados		
 		vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository.saveAndFlush(vendaCompraLojaVirtual);
 		
@@ -63,10 +68,50 @@ public class VendaCompraLojaVirtualController {
 		
 		VendaCompraLojaVirtualDTO vendaCompraLojaVirtualDTO = new VendaCompraLojaVirtualDTO();
 		vendaCompraLojaVirtualDTO.setValorTotal(vendaCompraLojaVirtual.getValorTotal());
+		vendaCompraLojaVirtualDTO.setPessoa(vendaCompraLojaVirtual.getPessoa());
+
+		vendaCompraLojaVirtualDTO.setEntrega(vendaCompraLojaVirtual.getEnderecoEntrega());
+		vendaCompraLojaVirtualDTO.setCobranca(vendaCompraLojaVirtual.getEnderecoCobranca());
+
+		vendaCompraLojaVirtualDTO.setValorDesconto(vendaCompraLojaVirtual.getValorDesconto());
+		vendaCompraLojaVirtualDTO.setValorFrete(vendaCompraLojaVirtual.getValorFrete());
+		vendaCompraLojaVirtualDTO.setId(vendaCompraLojaVirtual.getId());
+
+		for (ItemVendaLoja item: vendaCompraLojaVirtual.getItemVendaLojas()) {
+			ItemVendaDTO itemVendaDTO = new ItemVendaDTO();
+			itemVendaDTO.setQuantidade(item.getQuantidade());
+			// TODO comentado porque o produto gerou recursividade
+			//itemVendaDTO.setProduto(item.getProduto());
+			vendaCompraLojaVirtualDTO.getItemVendaLojaList().add(itemVendaDTO);
+		}
 		
 		return new ResponseEntity<>(vendaCompraLojaVirtualDTO, HttpStatus.OK);
 	}
 
-	
+	@GetMapping("**/consultaVendaId/{id}")
+	public ResponseEntity<VendaCompraLojaVirtualDTO> consultaVedendaId(@PathVariable("id") Long idVenda) {
+		VendaCompraLojaVirtual vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository.findById(idVenda).orElse(new VendaCompraLojaVirtual());
+
+		VendaCompraLojaVirtualDTO vendaCompraLojaVirtualDTO = new VendaCompraLojaVirtualDTO();
+		vendaCompraLojaVirtualDTO.setValorTotal(vendaCompraLojaVirtual.getValorTotal());
+		vendaCompraLojaVirtualDTO.setPessoa(vendaCompraLojaVirtual.getPessoa());
+
+		vendaCompraLojaVirtualDTO.setEntrega(vendaCompraLojaVirtual.getEnderecoEntrega());
+		vendaCompraLojaVirtualDTO.setCobranca(vendaCompraLojaVirtual.getEnderecoCobranca());
+
+		vendaCompraLojaVirtualDTO.setValorDesconto(vendaCompraLojaVirtual.getValorDesconto());
+		vendaCompraLojaVirtualDTO.setValorFrete(vendaCompraLojaVirtual.getValorFrete());
+		vendaCompraLojaVirtualDTO.setId(vendaCompraLojaVirtual.getId());
+
+		for (ItemVendaLoja item: vendaCompraLojaVirtual.getItemVendaLojas()) {
+			ItemVendaDTO itemVendaDTO = new ItemVendaDTO();
+			itemVendaDTO.setQuantidade(item.getQuantidade());
+			// TODO comentado porque o produto gerou recursividade
+			//itemVendaDTO.setProduto(item.getProduto());
+			vendaCompraLojaVirtualDTO.getItemVendaLojaList().add(itemVendaDTO);
+		}
+
+		return new ResponseEntity<>(vendaCompraLojaVirtualDTO, HttpStatus.OK);
+	}
 
 }

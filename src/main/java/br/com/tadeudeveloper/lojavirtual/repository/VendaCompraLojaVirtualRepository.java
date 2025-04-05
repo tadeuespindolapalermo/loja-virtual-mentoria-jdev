@@ -7,5 +7,7 @@ import br.com.tadeudeveloper.lojavirtual.model.VendaCompraLojaVirtual;
 
 @Transactional
 public interface VendaCompraLojaVirtualRepository extends JpaRepository<VendaCompraLojaVirtual, Long> {
+
+
 	
 }
